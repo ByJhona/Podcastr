@@ -6,22 +6,49 @@ import { api } from '../services/api'
 import {format, parseISO} from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString'
+import styles from './home.module.scss'
+import Image from 'next/image';
 
 type Episode = {
   id: string;
-    title: string;
-    members: string;
+  title: string;
+  thumbnail: string;
+  description: string;
+  members: string;
+  duration: number;
+  durationAsString: string;
+  url: string;
+  publishedAt: string;
+
 }
 
 type HomeProps = {
-  episodes: Array<Episode>
+  lastestEpisodes: Array<Episode>
+  allEpisodes: Array<Episode>
+
 }
 
-export default function Home(props:HomeProps) {
+export default function Home({lastestEpisodes, allEpisodes}: HomeProps) {
   return (
-    <div>
-    <h1>Index</h1>
-    <p>{JSON.stringify(props.episodes)}</p>
+    <div className={styles.homepage}>
+      <section className="{styles.lastestEpisodes}">
+        <h2>Últimos lançamentos</h2>
+
+        <ul>
+          {lastestEpisodes.map(episode => {
+            return(
+              <li key={episode.id}>
+                <a href="">{episode.title}</a>
+
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section>
+
+      </section>
     </div>
   )
 }
@@ -51,10 +78,13 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   })
   
+  const lastestEpisodes = episodes.slice(0, 2);
+  const allEpisodes = episodes.slice(2, episodes.lenght);
 
   return {
     props:{
-      episodes: episodes,
+      lastestEpisodes,
+      allEpisodes,
     },
     revalidate: 60 * 60 * 8,
   }
